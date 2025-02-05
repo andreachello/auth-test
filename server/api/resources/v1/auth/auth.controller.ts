@@ -1,12 +1,16 @@
 import { Response } from "express";
 import { SiweMessage, SiweErrorType, generateNonce } from "siwe";
 import * as authService from "./auth.service"
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+const secretKey = "your_secret_key_here";
 
 export const nonce = (req: any, res: Response) => {
     try {
-        req.session.nonce = generateNonce();
+        const nonce = generateNonce()
+        const token = jwt.sign({ nonce, address: req.params.address }, secretKey);
         res.setHeader('Content-Type', 'text/plain');
-        res.status(200).send(req.session.nonce);
+        res.status(200).send({ token, nonce });
     } catch (error) {
         return res.status(500).send("Internal Error");
     }
@@ -21,32 +25,27 @@ export const verify = async (req: any, res: Response) => {
 
         const SIWEObject = new SiweMessage(req.body.message);
         console.log("SIWEOBJECT", SIWEObject);
+        const payload = req.headers
+
+        console.log(payload);
+
+
+        // Extract the payload from jwt.verify and assert its type
+        const jwtPayload = jwt.verify(req.body.address, secretKey) as JwtPayload;
+        console.log("jwtPayload", jwtPayload);
+
+        // Access the 'nonce' property from the jwtPayload
+        const nonce = jwtPayload.nonce;
+        const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
 
         const { data: message } = await SIWEObject.verify({
             signature: req.body.signature,
-            nonce: req.session.nonce
+            nonce
         });
         console.log("message", message);
-
-        req.session.siwe = message;
-        req.session.cookie.expires = new Date("2026-01-07T17:45:48.621Z");
-        // req.session.save();
-
-        console.log("req.session", req.session);
-
-
-        authService.authenticateUser(message.address, (err: any, results: any) => {
-            if (err) {
-                console.log("authUser error", err);
-
-                return res.status(400).send(err)
-            }
-            return res.status(200).send({ status: "OK", data: results })
-        })
-
+        res.status(200).json({ token, address: message.address });
+        return;
     } catch (e: any) {
-        // req.session.siwe = null;
-        // req.session.nonce = null;
         console.error(e);
         switch (e) {
             case SiweErrorType.EXPIRED_MESSAGE: {
@@ -66,15 +65,20 @@ export const verify = async (req: any, res: Response) => {
 };
 
 export const validate = async (req: any, res: Response) => {
-    console.log("req.session", req.session);
-    
-    if (!req.session.siwe) {
-        res.status(401).json({ message: 'You have to first sign_in' });
-        return;
-    }
-    console.log("User is authenticated!");
-    res.setHeader('Content-Type', 'text/plain');
-    // res.json({ address: "" });
-    res.json({ address: req.session.siwe.address });
-}
+    const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
 
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, "your_secret_key_here"); // Verify the token using your secret key
+        console.log("Decoded JWT:", decoded);
+        console.log("User is authenticated!");
+        res.setHeader('Content-Type', 'text/plain');
+        res.json({ message: 'JWT validated successfully', address: (decoded as any).address });
+    } catch (error) {
+        console.error("JWT validation error:", error);
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+}

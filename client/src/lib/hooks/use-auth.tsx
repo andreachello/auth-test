@@ -28,9 +28,13 @@ export const useAuth = create<TAuthStore>((set) => ({
 
   init: async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/auth/personal_information`, {
-        withCredentials: true,
-      });
+      const token = localStorage.getItem('jwtToken');
+      const res = await axios.get(`${API_BASE_URL}/auth/personal_information`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Set the Authorization header with the token
+          },
+        });
 
       set({ address: res.data.address, loggedIn: true, ready: true });
     } catch (err) {
@@ -86,9 +90,9 @@ export const useAuth = create<TAuthStore>((set) => ({
   signin: async () => {
     try {
       // Get nonce
-      const res = await axios.get(`${API_BASE_URL}/auth/generate-nonce`, { withCredentials: true });
       const signer = await provider?.getSigner();
       const address = signer?.address;
+      const res = await axios.get(`${API_BASE_URL}/auth/generate-nonce/${address}`, { withCredentials: true });
 
       // Create message
       const messageRaw = new SiweMessage({
@@ -98,7 +102,7 @@ export const useAuth = create<TAuthStore>((set) => ({
         uri: window.location.origin,
         version: "1",
         chainId: 1,
-        nonce: res.data,
+        nonce: res.data.nonce,
       });
 
       const message = messageRaw.prepareMessage();
@@ -107,13 +111,26 @@ export const useAuth = create<TAuthStore>((set) => ({
       const signature = await signer?.signMessage(message);
 
       // Send to server
-      await axios.post(
+      const response = await axios.post(
         `${API_BASE_URL}/auth/verify`,
         { message, signature, address },
-        { withCredentials: true },
+        {
+          headers: {
+            Authorization: `Bearer ${res.data.token}`, // Set the Authorization header with the token
+          },
+        },
       );
 
-      set({ address, loggedIn: true });
+      // Validate JWT on the client side
+      if (response.data && response.data.token) {
+        // Store the JWT token in local storage or state for future requests
+        localStorage.setItem('jwtToken', response.data.token);
+
+        // Perform any additional actions after successful JWT validation
+        set({ address, loggedIn: true });
+      } else {
+        console.error("JWT validation failed");
+      }
     } catch (err) {
       console.log("error", err);
     }

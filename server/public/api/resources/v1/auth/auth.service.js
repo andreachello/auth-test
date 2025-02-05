@@ -15,6 +15,7 @@ const siwe_1 = require("siwe");
 const getNonce = (done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const nonce = (0, siwe_1.generateNonce)();
+        console.log("nonce", nonce);
         done(null, nonce);
     }
     catch (error) {

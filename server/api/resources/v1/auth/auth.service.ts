@@ -4,6 +4,8 @@ import { generateNonce } from "siwe"
 export const getNonce = async (done: any) => {
     try {
         const nonce = generateNonce();
+        console.log("nonce", nonce);
+
         done(null, nonce);
     } catch (error) {
         done(error, null);
