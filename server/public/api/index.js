@@ -80,7 +80,9 @@ app.use((0, express_session_1.default)({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        secure: true, sameSite: "none"
+        httpOnly: false,
+        sameSite: 'none',
+        secure: true,
     },
 }));
 app.use((0, cors_1.default)(corsOptions));

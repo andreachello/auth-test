@@ -107,7 +107,7 @@ export const useAuth = create<TAuthStore>((set) => ({
       const signature = await signer?.signMessage(message);
 
       // Send to server
-      const res2 = await axios.post(
+      await axios.post(
         `${API_BASE_URL}/auth/verify`,
         { message, signature, address },
         { withCredentials: true },
