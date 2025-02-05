@@ -44,7 +44,7 @@ const corsOptions = {
         "https://vercel.app",
         " auth-test-xvk7-git-main-andreas-projects-1f8252d2.vercel.app",
         "auth-test-xvk7-i0d6as54v-andreas-projects-1f8252d2.vercel.app",
-        "https://auth-test-xvk7.vercel.app/"
+        "https://auth-test-xvk7.vercel.app"
     ],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
