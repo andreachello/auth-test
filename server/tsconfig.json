@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "public",
+    "target": "es6",
+    "noEmit": false,
+    "module": "commonjs",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "api",
+  ],
+  "exclude": [
+    "node_modules",
+    ".turbo",
+    "coverage",
+    "dist",
+    "api/**/*.test.ts"
+  ]
+}

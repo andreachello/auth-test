@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["api"],
+  "exclude": ["node_modules", "dist", ".turbo", "coverage"]
+}
