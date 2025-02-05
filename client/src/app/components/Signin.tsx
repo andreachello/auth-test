@@ -1,8 +1,6 @@
 "use client";
-
 import useAuth from "@/lib/hooks/use-auth";
-import { useEffect } from "react";
-
+import React, { useEffect } from "react";
 
 const Signin = () => {
 
@@ -23,7 +21,7 @@ const Signin = () => {
                     >
                         🎉 Sign in
                     </button>
-                ) : <p>Address: {s.address}</p>
+                ) : <p>Address: {s.address as string}</p>
             ) : null}
         </div>
     );
