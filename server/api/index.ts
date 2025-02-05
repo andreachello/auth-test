@@ -96,14 +96,11 @@ app.use(
     saveUninitialized: true,
     cookie: {
       httpOnly: false,
-      sameSite: 'none',
-      secure: true,
+      sameSite: true,
+      secure: false,
     },
   }),
 );
-
-
-
 
 app.use(cors(corsOptions));
 
