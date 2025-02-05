@@ -29,8 +29,8 @@ export const verify = async (req: any, res: Response) => {
         console.log("message", message);
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(message.expirationTime ?? "");
-        req.session.save();
+        // req.session.cookie.expires = new Date(message.expirationTime ?? "");
+        // req.session.save();
 
         console.log("req.session", req.session);
 

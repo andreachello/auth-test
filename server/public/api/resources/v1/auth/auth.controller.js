@@ -57,7 +57,6 @@ const nonce = (req, res) => {
 };
 exports.nonce = nonce;
 const verify = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         if (!req.body.message) {
             res.status(422).json({ message: 'Expected prepareMessage object as body.' });
@@ -71,8 +70,8 @@ const verify = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         console.log("message", message);
         req.session.siwe = message;
-        req.session.cookie.expires = new Date((_a = message.expirationTime) !== null && _a !== void 0 ? _a : "");
-        req.session.save();
+        // req.session.cookie.expires = new Date(message.expirationTime ?? "");
+        // req.session.save();
         console.log("req.session", req.session);
         authService.authenticateUser(message.address, (err, results) => {
             if (err) {
