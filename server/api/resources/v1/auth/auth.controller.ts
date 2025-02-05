@@ -45,8 +45,8 @@ export const verify = async (req: any, res: Response) => {
         })
 
     } catch (e: any) {
-        req.session.siwe = null;
-        req.session.nonce = null;
+        // req.session.siwe = null;
+        // req.session.nonce = null;
         console.error(e);
         switch (e) {
             case SiweErrorType.EXPIRED_MESSAGE: {
