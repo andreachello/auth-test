@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BrowserProvider } from 'ethers';
 
 let provider: BrowserProvider | undefined;

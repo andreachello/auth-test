@@ -17,15 +17,15 @@ import FileStore from 'session-file-store';
 
 const FileStoreStore = FileStore(Session);
 
-const redisClient = createClient({
-  username: process.env.REDIS_USERNAME,
-  password: process.env.REDIS_SECRET,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: Number(process.env.REDIS_PORT)
-  }
-});
-redisClient.connect().catch(console.error);
+// const redisClient = createClient({
+//   username: process.env.REDIS_USERNAME,
+//   password: process.env.REDIS_SECRET,
+//   socket: {
+//     host: process.env.REDIS_HOST,
+//     port: Number(process.env.REDIS_PORT)
+//   }
+// });
+// redisClient.connect().catch(console.error);
 
 const app = express();
 const server = http.createServer(app);
@@ -36,7 +36,26 @@ const PORT = 4090;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
+    "http://localhost:3005",
+    "http://localhost:3006",
+    "http://localhost:3007",
+    "http://localhost:3008",
+    "http://localhost:3009",
+    "https://vercel.app",
+    " auth-test-xvk7-git-main-andreas-projects-1f8252d2.vercel.app",
+    "auth-test-xvk7-i0d6as54v-andreas-projects-1f8252d2.vercel.app",
+    "https://auth-test-xvk7.vercel.app/"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+};
 
 // redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
@@ -45,10 +64,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 export const io = new Server(server, {
   maxHttpBufferSize: 5e8, // Increases buffer size to ~500MB
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
+  cors: corsOptions
 });
 
 io.on("connection", (socket: any) => {
@@ -84,25 +100,7 @@ app.use(
   }),
 );
 
-const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "http://localhost:3003",
-    "http://localhost:3004",
-    "http://localhost:3005",
-    "http://localhost:3006",
-    "http://localhost:3007",
-    "http://localhost:3008",
-    "http://localhost:3009",
-    "https://vercel.app",
-    " auth-test-xvk7-git-main-andreas-projects-1f8252d2.vercel.app",
-    "auth-test-xvk7-i0d6as54v-andreas-projects-1f8252d2.vercel.app",
-    "https://auth-test-xvk7.vercel.app/"
-  ],
-  credentials: true,
-};
+
 
 
 app.use(cors(corsOptions));
