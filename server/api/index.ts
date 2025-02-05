@@ -13,7 +13,7 @@ import {
 
 import { RedisStore } from 'connect-redis';
 import { createClient } from 'redis';
-import FileStore from 'session-file-store'; 
+import FileStore from 'session-file-store';
 
 const FileStoreStore = FileStore(Session);
 
@@ -85,7 +85,22 @@ app.use(
 );
 
 const corsOptions = {
-  origin: [""],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
+    "http://localhost:3005",
+    "http://localhost:3006",
+    "http://localhost:3007",
+    "http://localhost:3008",
+    "http://localhost:3009",
+    "https://vercel.app",
+    " auth-test-xvk7-git-main-andreas-projects-1f8252d2.vercel.app",
+    "auth-test-xvk7-i0d6as54v-andreas-projects-1f8252d2.vercel.app",
+    "https://auth-test-xvk7.vercel.app/"
+  ],
   credentials: true,
 };
 
