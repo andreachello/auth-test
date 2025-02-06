@@ -29,6 +29,8 @@ export const useAuth = create<TAuthStore>((set) => ({
   init: async () => {
     try {
       const token = localStorage.getItem('jwtToken');
+      console.log("token", token);
+      
       const res = await axios.get(`${API_BASE_URL}/auth/personal_information`,
         {
           headers: {

@@ -8,9 +8,8 @@ const secretKey = "your_secret_key_here";
 export const nonce = (req: any, res: Response) => {
     try {
         const nonce = generateNonce()
-        const token = jwt.sign({ nonce, address: req.params.address }, secretKey);
         res.setHeader('Content-Type', 'text/plain');
-        res.status(200).send({ token, nonce });
+        res.status(200).send({ token: 0, nonce });
     } catch (error) {
         return res.status(500).send("Internal Error");
     }
@@ -22,22 +21,15 @@ export const verify = async (req: any, res: Response) => {
             res.status(422).json({ message: 'Expected prepareMessage object as body.' });
             return;
         }
-
+        const token = jwt.sign({ nonce: req.body.nonce, address: req.body.address }, secretKey);
         const SIWEObject = new SiweMessage(req.body.message);
-        console.log("SIWEOBJECT", SIWEObject);
         const payload = req.headers
 
-        console.log(payload);
-
-
         // Extract the payload from jwt.verify and assert its type
-        const jwtPayload = jwt.verify(req.body.address, secretKey) as JwtPayload;
-        console.log("jwtPayload", jwtPayload);
+        const jwtPayload = jwt.verify(token, secretKey) as JwtPayload;
 
         // Access the 'nonce' property from the jwtPayload
         const nonce = jwtPayload.nonce;
-        const token = req.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
-
         const { data: message } = await SIWEObject.verify({
             signature: req.body.signature,
             nonce

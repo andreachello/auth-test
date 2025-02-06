@@ -41,7 +41,7 @@ const authController = __importStar(require("./auth.controller"));
 // import { requireAuth } from "../middleware/requireAuth";
 const authRouter = express_1.default.Router();
 // Generate a nonce and save it in the session
-authRouter.get("/generate-nonce/:address", authController.nonce);
+authRouter.get("/generate-nonce/", authController.nonce);
 authRouter.post("/verify", authController.verify);
 authRouter.get("/personal_information", authController.validate);
 exports.default = authRouter;
